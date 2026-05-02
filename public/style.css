@@ -297,19 +297,17 @@ textarea:focus {
 }
 
 #undo-btn {
-    color: #fbbf24;
-    /* Amber */
+    color: white;
 }
 
 #undo-btn:hover {
-    color: #f59e0b;
+    color: var(--accent-color);
 }
 
 #redo-btn {
-    color: #22d3ee;
-    /* Cyan */
+    color: white;
 }
 
 #redo-btn:hover {
-    color: #06b6d4;
+    color: var(--accent-color);
 }
