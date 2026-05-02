@@ -289,3 +289,20 @@ textarea:focus {
     outline: none;
     border-color: var(--primary-color);
 }
+
+#undo-btn {
+    color: #fbbf24; /* Amber */
+}
+
+#undo-btn:hover {
+    color: #f59e0b;
+}
+
+#redo-btn {
+    color: #22d3ee; /* Cyan */
+}
+
+#redo-btn:hover {
+    color: #06b6d4;
+}
+
