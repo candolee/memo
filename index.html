@@ -29,6 +29,21 @@
 
         <main id="main-content" class="hidden">
             <section class="memo-input-container">
+                <div class="memo-controls">
+                    <select id="font-family">
+                        <option value="'Malgun Gothic', sans-serif" selected>맑은 고딕</option>
+                        <option value="'Inter', sans-serif">Inter</option>
+                        <option value="'Nanum Gothic', sans-serif">나눔 고딕</option>
+                        <option value="serif">명조체</option>
+                    </select>
+                    <select id="font-size">
+                        <option value="9pt" selected>9pt</option>
+                        <option value="10pt">10pt</option>
+                        <option value="11pt">11pt</option>
+                        <option value="12pt">12pt</option>
+                        <option value="14pt">14pt</option>
+                    </select>
+                </div>
                 <textarea id="memo-input" placeholder="여기에 메모를 작성하세요..."></textarea>
                 <div style="display: flex; justify-content: flex-end;">
                     <button id="save-btn" class="btn-primary">저장하기</button>

@@ -207,8 +207,31 @@ textarea:focus {
     100% { transform: rotate(360deg); }
 }
 
-#empty-state {
-    text-align: center;
-    padding: 4rem;
-    color: var(--text-secondary);
+/* Font and Size customization */
+.memo-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
 }
+
+.memo-controls select {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid var(--card-border);
+    border-radius: 0.4rem;
+    padding: 0.3rem;
+    font-size: 0.8rem;
+}
+
+.memo-card .memo-content {
+    white-space: pre-wrap;
+}
+
+/* Edit UI */
+.edit-mode .memo-content {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--primary-color);
+    padding: 0.5rem;
+    border-radius: 0.4rem;
+}
+
