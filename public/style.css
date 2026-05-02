@@ -139,7 +139,7 @@ textarea:focus {
 .memo-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 0.8rem;
+    gap: 0.4rem;
 }
 
 
@@ -197,7 +197,7 @@ textarea:focus {
 .btn-icon {
     padding: 0.4rem;
     background: transparent;
-    color: var(--text-secondary);
+    color: var(--text-primary);
 }
 
 .btn-icon:hover {
@@ -221,8 +221,13 @@ textarea:focus {
 }
 
 @keyframes rotation {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Font and Size customization */
@@ -253,6 +258,7 @@ textarea:focus {
     padding: 0.5rem;
     border-radius: 0.4rem;
 }
+
 /* Search UI */
 .search-container {
     margin-bottom: 0.8rem;
@@ -291,7 +297,8 @@ textarea:focus {
 }
 
 #undo-btn {
-    color: #fbbf24; /* Amber */
+    color: #fbbf24;
+    /* Amber */
 }
 
 #undo-btn:hover {
@@ -299,10 +306,10 @@ textarea:focus {
 }
 
 #redo-btn {
-    color: #22d3ee; /* Cyan */
+    color: #22d3ee;
+    /* Cyan */
 }
 
 #redo-btn:hover {
     color: #06b6d4;
 }
-
