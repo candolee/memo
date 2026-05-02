@@ -50,6 +50,7 @@ const saveBtn = document.getElementById('save-btn');
 const memoList = document.getElementById('memo-list');
 const emptyState = document.getElementById('empty-state');
 const loading = document.getElementById('loading');
+const searchInput = document.getElementById('search-input');
 
 const fontFamilySelect = document.getElementById('font-family');
 const fontSizeSelect = document.getElementById('font-size');
@@ -57,6 +58,7 @@ const fontSizeSelect = document.getElementById('font-size');
 let currentUser = null;
 let unsubscribeMemos = null;
 let editingMemoId = null;
+let allMemos = [];
 
 // Auth Logic
 loginBtn.onclick = () => signInWithPopup(auth, provider).catch(console.error);
@@ -91,6 +93,28 @@ function showWelcome() {
     memoList.innerHTML = '';
 }
 
+// Search Logic
+searchInput.oninput = () => {
+    renderFilteredMemos();
+};
+
+function renderFilteredMemos() {
+    const searchTerm = searchInput.value.toLowerCase();
+    memoList.innerHTML = '';
+    
+    const filtered = allMemos.filter(m => m.data.content.toLowerCase().includes(searchTerm));
+    
+    if (filtered.length === 0) {
+        emptyState.classList.remove('hidden');
+        emptyState.querySelector('p').textContent = searchTerm ? '검색 결과가 없습니다.' : '작성된 메모가 없습니다. 첫 메모를 작성해보세요!';
+    } else {
+        emptyState.classList.add('hidden');
+        filtered.forEach((m) => {
+            renderMemo(m.id, m.data);
+        });
+    }
+}
+
 // Firestore Logic
 saveBtn.onclick = async () => {
     const content = memoInput.value.trim();
@@ -109,7 +133,7 @@ saveBtn.onclick = async () => {
                 updatedAt: serverTimestamp()
             });
             editingMemoId = null;
-            saveBtn.textContent = '저장하기';
+            saveBtn.textContent = '저장';
         } else {
             await addDoc(collection(db, `users/${currentUser.uid}/memos`), {
                 content,
@@ -134,18 +158,9 @@ function loadMemos() {
     );
 
     unsubscribeMemos = onSnapshot(q, (snapshot) => {
-        memoList.innerHTML = '';
         loading.classList.add('hidden');
-        
-        if (snapshot.empty) {
-            emptyState.classList.remove('hidden');
-        } else {
-            emptyState.classList.add('hidden');
-            snapshot.forEach((docSnap) => {
-                const memo = docSnap.data();
-                renderMemo(docSnap.id, memo);
-            });
-        }
+        allMemos = snapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }));
+        renderFilteredMemos();
     });
 }
 

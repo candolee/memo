@@ -252,4 +252,24 @@ textarea:focus {
     padding: 0.5rem;
     border-radius: 0.4rem;
 }
+/* Search UI */
+.search-container {
+    margin-bottom: 0.8rem;
+    width: 100%;
+}
 
+#search-input {
+    width: 100%;
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--card-border);
+    border-radius: 0.4rem;
+    padding: 0.5rem 1rem;
+    color: white;
+    font-size: 0.9rem;
+}
+
+#search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
