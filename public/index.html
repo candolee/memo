@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My메모 - 나만의 프리미엄 메모장</title>
+    <meta name="description" content="Google 계정으로 로그인하여 안전하게 나만의 메모를 관리하세요.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>My메모</h1>
+            <div id="auth-container" class="auth-section">
+                <button id="login-btn" class="btn-primary">Google로 로그인</button>
+                <div id="user-profile" class="user-info hidden">
+                    <img id="user-photo" src="" alt="User Photo">
+                    <span id="user-name"></span>
+                    <button id="logout-btn" class="btn-outline">로그아웃</button>
+                </div>
+            </div>
+        </header>
+
+        <main id="main-content" class="hidden">
+            <section class="memo-input-container">
+                <textarea id="memo-input" placeholder="여기에 메모를 작성하세요..."></textarea>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button id="save-btn" class="btn-primary">저장하기</button>
+                </div>
+            </section>
+
+            <section id="memo-container">
+                <div id="memo-list" class="memo-list">
+                    <!-- Memos will be injected here -->
+                </div>
+                <div id="empty-state" class="hidden">
+                    <p>작성된 메모가 없습니다. 첫 메모를 작성해보세요!</p>
+                </div>
+                <div id="loading" class="hidden" style="text-align: center; padding: 2rem;">
+                    <span class="loader"></span>
+                </div>
+            </section>
+        </main>
+
+        <section id="welcome-screen" style="text-align: center; padding: 5rem 2rem;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">메모를 더 아름답고 안전하게.</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Google 계정으로 로그인하여 나만의 공간을 만들어보세요.</p>
+        </section>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module" src="main.js"></script>
+</body>
+</html>

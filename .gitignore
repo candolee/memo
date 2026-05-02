@@ -1,0 +1,4 @@
+.firebase/
+firestore.indexes.json
+firebase-debug.log
+.DS_Store
