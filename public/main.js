@@ -51,6 +51,9 @@ const memoList = document.getElementById('memo-list');
 const emptyState = document.getElementById('empty-state');
 const loading = document.getElementById('loading');
 const searchInput = document.getElementById('search-input');
+const searchReset = document.getElementById('search-reset');
+const undoBtn = document.getElementById('undo-btn');
+const redoBtn = document.getElementById('redo-btn');
 
 const fontFamilySelect = document.getElementById('font-family');
 const fontSizeSelect = document.getElementById('font-size');
@@ -59,6 +62,33 @@ let currentUser = null;
 let unsubscribeMemos = null;
 let editingMemoId = null;
 let allMemos = [];
+
+// Undo/Redo Logic
+let undoStack = [memoInput.value];
+let redoStack = [];
+
+memoInput.oninput = () => {
+    if (memoInput.value !== undoStack[undoStack.length - 1]) {
+        undoStack.push(memoInput.value);
+        if (undoStack.length > 50) undoStack.shift();
+        redoStack = [];
+    }
+};
+
+undoBtn.onclick = () => {
+    if (undoStack.length > 1) {
+        redoStack.push(undoStack.pop());
+        memoInput.value = undoStack[undoStack.length - 1];
+    }
+};
+
+redoBtn.onclick = () => {
+    if (redoStack.length > 0) {
+        const next = redoStack.pop();
+        undoStack.push(next);
+        memoInput.value = next;
+    }
+};
 
 // Auth Logic
 loginBtn.onclick = () => signInWithPopup(auth, provider).catch(console.error);
@@ -95,6 +125,17 @@ function showWelcome() {
 
 // Search Logic
 searchInput.oninput = () => {
+    if (searchInput.value) {
+        searchReset.classList.remove('hidden');
+    } else {
+        searchReset.classList.add('hidden');
+    }
+    renderFilteredMemos();
+};
+
+searchReset.onclick = () => {
+    searchInput.value = '';
+    searchReset.classList.add('hidden');
     renderFilteredMemos();
 };
 
