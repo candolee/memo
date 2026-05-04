@@ -308,7 +308,10 @@ function renderMemo(id, memo) {
     card.innerHTML = `
         <div class="memo-header">
             <div class="memo-meta">
-                ${memo.category ? `<span class="memo-category-badge">${memo.category}</span>` : ''}
+                <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    ${memo.category ? `<span class="memo-category-badge">${memo.category}</span>` : ''}
+                    ${memo.title ? `<h3 class="memo-card-title" style="margin: 0; font-size: 0.9rem;">${memo.title}</h3>` : ''}
+                </div>
                 <span class="memo-date-text">${displayDate} ${displayTime}</span>
             </div>
             <div class="memo-actions">
@@ -325,9 +328,9 @@ function renderMemo(id, memo) {
                 </button>
             </div>
         </div>
-        ${memo.title ? `<h3 class="memo-card-title">${memo.title}</h3>` : ''}
         <div class="memo-content" style="font-family: ${memo.fontFamily || 'inherit'}; font-size: ${memo.fontSize || 'inherit'};">${memo.content}</div>
     `;
+
 
     card.querySelector('.edit-btn').onclick = () => {
         memoInput.innerHTML = memo.content;
