@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My메모 - 나만의 프리미엄 메모장</title>
+    <title>My메모 - 나만의 메모장</title>
     <meta name="description" content="Google 계정으로 로그인하여 안전하게 나만의 메모를 관리하세요.">
-    <link rel="stylesheet" href="public/style.css">
+    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -41,9 +41,9 @@
                 <div class="memo-toolbar">
                     <div class="memo-controls">
                         <select id="font-family">
-                            <option value="'Malgun Gothic', sans-serif" selected>맑은 고딕</option>
+                            <option value="'Malgun Gothic', sans-serif" selected>맑은고딕</option>
                             <option value="'Inter', sans-serif">Inter</option>
-                            <option value="'Nanum Gothic', sans-serif">나눔 고딕</option>
+                            <option value="'Nanum Gothic', sans-serif">나눔고딕</option>
                             <option value="serif">명조체</option>
                         </select>
                         <select id="font-size">
@@ -59,12 +59,11 @@
                         <input type="color" id="memo-bg-color" title="메모 배경색" value="#1e293b">
                     </div>
                     <div style="display: flex; gap: 0.5rem; align-items: center;">
-                        <button id="voice-btn" class="btn-outline">음성으로 입력하기</button>
+                        <button id="voice-btn" class="btn-outline">음성입력</button>
                         <button id="save-btn" class="btn-primary">저장</button>
                     </div>
                 </div>
             </section>
-
 
             <section class="search-container">
                 <div class="search-wrapper">
@@ -93,7 +92,7 @@
     </div>
 
     <!-- Firebase SDKs -->
-    <script type="module" src="public/main.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
 
 </html>

@@ -283,7 +283,20 @@ saveBtn.onclick = async () => {
 };
 
 
+function formatDateTime(timestamp) {
+    if (!timestamp) return 'Saving...';
+    const date = new Date(timestamp.seconds * 1000);
+    const yy = String(date.getFullYear()).substring(2);
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mi = String(date.getMinutes()).padStart(2, '0');
+    const ss = String(date.getSeconds()).padStart(2, '0');
+    return `${yy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+}
+
 function loadMemos() {
+
     loading.classList.remove('hidden');
     const q = query(
         collection(db, `users/${currentUser.uid}/memos`), 
@@ -302,14 +315,16 @@ function renderMemo(id, memo) {
     card.className = 'memo-card';
     card.style.backgroundColor = memo.backgroundColor || 'var(--card-bg)';
     
-    const displayDate = memo.date || (memo.createdAt ? new Date(memo.createdAt.seconds * 1000).toLocaleDateString() : 'Saving...');
-    const displayTime = memo.time || '';
+    const displayDateTime = formatDateTime(memo.updatedAt || memo.createdAt);
 
     card.innerHTML = `
         <div class="memo-header">
             <div class="memo-meta">
-                ${memo.category ? `<span class="memo-category-badge">${memo.category}</span>` : ''}
-                <span class="memo-date-text">${displayDate} ${displayTime}</span>
+                <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    ${memo.category ? `<span class="memo-category-badge">${memo.category}</span>` : ''}
+                    ${memo.title ? `<h3 class="memo-card-title" style="margin: 0;">${memo.title}</h3>` : ''}
+                </div>
+                <span class="memo-date-text">저장일시: ${displayDateTime}</span>
             </div>
             <div class="memo-actions">
                 <button class="btn-icon edit-btn" title="수정">
@@ -325,9 +340,9 @@ function renderMemo(id, memo) {
                 </button>
             </div>
         </div>
-        ${memo.title ? `<h3 class="memo-card-title">${memo.title}</h3>` : ''}
         <div class="memo-content" style="font-family: ${memo.fontFamily || 'inherit'}; font-size: ${memo.fontSize || 'inherit'};">${memo.content}</div>
     `;
+
 
     card.querySelector('.edit-btn').onclick = () => {
         memoInput.innerHTML = memo.content;
