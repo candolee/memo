@@ -311,9 +311,10 @@ function renderMemo(id, memo) {
                 <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                     ${memo.category ? `<span class="memo-category-badge">${memo.category}</span>` : ''}
                     ${memo.title ? `<h3 class="memo-card-title" style="margin: 0; font-size: 0.9rem;">${memo.title}</h3>` : ''}
+                    <span class="memo-date-text" style="margin-left: 0.5rem;">${displayDate} ${displayTime}</span>
                 </div>
-                <span class="memo-date-text">${displayDate} ${displayTime}</span>
             </div>
+
             <div class="memo-actions">
                 <button class="btn-icon edit-btn" title="수정">
                     <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
