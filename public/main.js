@@ -46,6 +46,13 @@ const userName = document.getElementById('user-name');
 const mainContent = document.getElementById('main-content');
 const welcomeScreen = document.getElementById('welcome-screen');
 const memoInput = document.getElementById('memo-input');
+const memoCategory = document.getElementById('memo-category');
+const memoTitle = document.getElementById('memo-title');
+const memoDate = document.getElementById('memo-date');
+const memoTime = document.getElementById('memo-time');
+const textColorPicker = document.getElementById('text-color');
+const memoBgColorPicker = document.getElementById('memo-bg-color');
+
 const saveBtn = document.getElementById('save-btn');
 const memoList = document.getElementById('memo-list');
 const emptyState = document.getElementById('empty-state');
@@ -58,6 +65,12 @@ const voiceBtn = document.getElementById('voice-btn');
 
 const fontFamilySelect = document.getElementById('font-family');
 const fontSizeSelect = document.getElementById('font-size');
+
+// Set default date and time
+const now = new Date();
+memoDate.value = now.toISOString().split('T')[0];
+memoTime.value = now.toTimeString().split(' ')[0].substring(0, 5);
+
 
 // Speech Recognition
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -82,17 +95,13 @@ if (SpeechRecognition) {
 
     recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
-        const start = memoInput.selectionStart;
-        const end = memoInput.selectionEnd;
-        const text = memoInput.value;
-        const before = text.substring(0, start);
-        const after = text.substring(end);
-        
-        memoInput.value = before + (before && !before.endsWith(' ') ? ' ' : '') + transcript + after;
+        memoInput.focus();
+        document.execCommand('insertText', false, transcript);
         
         // Update undo stack
         if (memoInput.oninput) memoInput.oninput();
     };
+
 
     recognition.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
@@ -113,12 +122,12 @@ let editingMemoId = null;
 let allMemos = [];
 
 // Undo/Redo Logic
-let undoStack = [memoInput.value];
+let undoStack = [memoInput.innerHTML];
 let redoStack = [];
 
 memoInput.oninput = () => {
-    if (memoInput.value !== undoStack[undoStack.length - 1]) {
-        undoStack.push(memoInput.value);
+    if (memoInput.innerHTML !== undoStack[undoStack.length - 1]) {
+        undoStack.push(memoInput.innerHTML);
         if (undoStack.length > 50) undoStack.shift();
         redoStack = [];
     }
@@ -127,7 +136,7 @@ memoInput.oninput = () => {
 undoBtn.onclick = () => {
     if (undoStack.length > 1) {
         redoStack.push(undoStack.pop());
-        memoInput.value = undoStack[undoStack.length - 1];
+        memoInput.innerHTML = undoStack[undoStack.length - 1];
     }
 };
 
@@ -135,9 +144,19 @@ redoBtn.onclick = () => {
     if (redoStack.length > 0) {
         const next = redoStack.pop();
         undoStack.push(next);
-        memoInput.value = next;
+        memoInput.innerHTML = next;
     }
 };
+
+// Color Pickers
+textColorPicker.oninput = () => {
+    document.execCommand('foreColor', false, textColorPicker.value);
+};
+
+memoBgColorPicker.oninput = () => {
+    memoInput.style.backgroundColor = memoBgColorPicker.value;
+};
+
 
 // Auth Logic
 loginBtn.onclick = () => signInWithPopup(auth, provider).catch(console.error);
@@ -192,7 +211,12 @@ function renderFilteredMemos() {
     const searchTerm = searchInput.value.toLowerCase();
     memoList.innerHTML = '';
     
-    const filtered = allMemos.filter(m => m.data.content.toLowerCase().includes(searchTerm));
+    const filtered = allMemos.filter(m => {
+        const content = (m.data.content || '').toLowerCase();
+        const title = (m.data.title || '').toLowerCase();
+        const category = (m.data.category || '').toLowerCase();
+        return content.includes(searchTerm) || title.includes(searchTerm) || category.includes(searchTerm);
+    });
     
     if (filtered.length === 0) {
         emptyState.classList.remove('hidden');
@@ -205,40 +229,59 @@ function renderFilteredMemos() {
     }
 }
 
+
 // Firestore Logic
 saveBtn.onclick = async () => {
-    const content = memoInput.value.trim();
-    if (!content) return;
+    const content = memoInput.innerHTML.trim();
+    if (!content || content === '<br>') return;
 
+    const category = memoCategory.value.trim();
+    const title = memoTitle.value.trim();
+    const date = memoDate.value;
+    const time = memoTime.value;
+    const backgroundColor = memoInput.style.backgroundColor || '#1e293b';
     const fontFamily = fontFamilySelect.value;
     const fontSize = fontSizeSelect.value;
 
     saveBtn.disabled = true;
     try {
+        const memoData = {
+            content,
+            category,
+            title,
+            date,
+            time,
+            backgroundColor,
+            fontFamily,
+            fontSize,
+            updatedAt: serverTimestamp()
+        };
+
         if (editingMemoId) {
-            await updateDoc(doc(db, `users/${currentUser.uid}/memos`, editingMemoId), {
-                content,
-                fontFamily,
-                fontSize,
-                updatedAt: serverTimestamp()
-            });
+            await updateDoc(doc(db, `users/${currentUser.uid}/memos`, editingMemoId), memoData);
             editingMemoId = null;
             saveBtn.textContent = '저장';
         } else {
-            await addDoc(collection(db, `users/${currentUser.uid}/memos`), {
-                content,
-                fontFamily,
-                fontSize,
-                createdAt: serverTimestamp()
-            });
+            memoData.createdAt = serverTimestamp();
+            await addDoc(collection(db, `users/${currentUser.uid}/memos`), memoData);
         }
-        memoInput.value = '';
+        
+        // Reset inputs
+        memoInput.innerHTML = '';
+        memoCategory.value = '';
+        memoTitle.value = '';
+        memoInput.style.backgroundColor = '#1e293b';
+        const now = new Date();
+        memoDate.value = now.toISOString().split('T')[0];
+        memoTime.value = now.toTimeString().split(' ')[0].substring(0, 5);
+        
     } catch (e) {
         console.error("Error saving document: ", e);
     } finally {
         saveBtn.disabled = false;
     }
 };
+
 
 function loadMemos() {
     loading.classList.remove('hidden');
@@ -257,12 +300,17 @@ function loadMemos() {
 function renderMemo(id, memo) {
     const card = document.createElement('div');
     card.className = 'memo-card';
+    card.style.backgroundColor = memo.backgroundColor || 'var(--card-bg)';
     
-    const date = memo.createdAt ? new Date(memo.createdAt.seconds * 1000).toLocaleString() : 'Saving...';
+    const displayDate = memo.date || (memo.createdAt ? new Date(memo.createdAt.seconds * 1000).toLocaleDateString() : 'Saving...');
+    const displayTime = memo.time || '';
 
     card.innerHTML = `
         <div class="memo-header">
-            <span>${date}</span>
+            <div class="memo-meta">
+                ${memo.category ? `<span class="memo-category-badge">${memo.category}</span>` : ''}
+                <span class="memo-date-text">${displayDate} ${displayTime}</span>
+            </div>
             <div class="memo-actions">
                 <button class="btn-icon edit-btn" title="수정">
                     <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
@@ -277,11 +325,17 @@ function renderMemo(id, memo) {
                 </button>
             </div>
         </div>
+        ${memo.title ? `<h3 class="memo-card-title">${memo.title}</h3>` : ''}
         <div class="memo-content" style="font-family: ${memo.fontFamily || 'inherit'}; font-size: ${memo.fontSize || 'inherit'};">${memo.content}</div>
     `;
 
     card.querySelector('.edit-btn').onclick = () => {
-        memoInput.value = memo.content;
+        memoInput.innerHTML = memo.content;
+        memoCategory.value = memo.category || '';
+        memoTitle.value = memo.title || '';
+        memoDate.value = memo.date || '';
+        memoTime.value = memo.time || '';
+        memoInput.style.backgroundColor = memo.backgroundColor || '#1e293b';
         fontFamilySelect.value = memo.fontFamily || "'Malgun Gothic', sans-serif";
         fontSizeSelect.value = memo.fontSize || "9pt";
         editingMemoId = id;
@@ -289,6 +343,7 @@ function renderMemo(id, memo) {
         memoInput.focus();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
+
 
     card.querySelector('.delete-btn').onclick = async () => {
         if (confirm('정말로 이 메모를 삭제하시겠습니까?')) {

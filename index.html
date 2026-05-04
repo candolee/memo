@@ -29,8 +29,16 @@
 
         <main id="main-content" class="hidden">
             <section class="memo-input-container">
-                <textarea id="memo-input" placeholder="여기에 메모를 작성하세요..."></textarea>
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
+                <div class="memo-header-inputs">
+                    <input type="text" id="memo-category" placeholder="카테고리">
+                    <input type="text" id="memo-title" placeholder="제목">
+                </div>
+                <div class="memo-datetime-inputs">
+                    <input type="date" id="memo-date">
+                    <input type="time" id="memo-time">
+                </div>
+                <div id="memo-input" contenteditable="true" placeholder="여기에 메모를 작성하세요..."></div>
+                <div class="memo-toolbar">
                     <div class="memo-controls">
                         <select id="font-family">
                             <option value="'Malgun Gothic', sans-serif" selected>맑은 고딕</option>
@@ -47,14 +55,16 @@
                         </select>
                         <button id="undo-btn" class="btn-icon" title="뒤로 되돌리기"><i class="fas fa-undo"></i></button>
                         <button id="redo-btn" class="btn-icon" title="앞으로 되돌리기"><i class="fas fa-redo"></i></button>
+                        <input type="color" id="text-color" title="글자 색상" value="#ffffff">
+                        <input type="color" id="memo-bg-color" title="메모 배경색" value="#1e293b">
                     </div>
                     <div style="display: flex; gap: 0.5rem; align-items: center;">
                         <button id="voice-btn" class="btn-outline">음성으로 입력하기</button>
                         <button id="save-btn" class="btn-primary">저장</button>
                     </div>
-
                 </div>
             </section>
+
 
             <section class="search-container">
                 <div class="search-wrapper">
