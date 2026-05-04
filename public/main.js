@@ -305,6 +305,9 @@ function renderMemo(id, memo) {
     const displayDate = memo.date || (memo.createdAt ? new Date(memo.createdAt.seconds * 1000).toLocaleDateString() : 'Saving...');
     const displayTime = memo.time || '';
 
+    const storageDateObj = memo.updatedAt || memo.createdAt;
+    const storageDateStr = storageDateObj ? new Date(storageDateObj.seconds * 1000).toLocaleString() : 'Saving...';
+
     card.innerHTML = `
         <div class="memo-header">
             <div class="memo-meta">
@@ -330,7 +333,9 @@ function renderMemo(id, memo) {
             </div>
         </div>
         <div class="memo-content" style="font-family: ${memo.fontFamily || 'inherit'}; font-size: ${memo.fontSize || 'inherit'};">${memo.content}</div>
+        <div class="memo-storage-footer">저장 일시: ${storageDateStr}</div>
     `;
+
 
 
     card.querySelector('.edit-btn').onclick = () => {
