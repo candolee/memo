@@ -306,7 +306,8 @@ function renderMemo(id, memo) {
     const displayTime = memo.time || '';
 
     const storageDateObj = memo.updatedAt || memo.createdAt;
-    const storageDateStr = storageDateObj ? new Date(storageDateObj.seconds * 1000).toLocaleString('ko-KR', { hour12: false }) : 'Saving...';
+    const storageDateStr = storageDateObj ? new Date(storageDateObj.seconds * 1000).toLocaleString() : 'Saving...';
+
 
 
     card.innerHTML = `
