@@ -54,9 +54,58 @@ const searchInput = document.getElementById('search-input');
 const searchReset = document.getElementById('search-reset');
 const undoBtn = document.getElementById('undo-btn');
 const redoBtn = document.getElementById('redo-btn');
+const voiceBtn = document.getElementById('voice-btn');
 
 const fontFamilySelect = document.getElementById('font-family');
 const fontSizeSelect = document.getElementById('font-size');
+
+// Speech Recognition
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SpeechRecognition) {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ko-KR';
+    recognition.interimResults = false;
+
+    voiceBtn.onclick = () => {
+        try {
+            recognition.start();
+        } catch (e) {
+            console.error('Recognition already started or error:', e);
+        }
+    };
+
+    recognition.onstart = () => {
+        voiceBtn.textContent = '음성 인식 중...';
+        voiceBtn.classList.add('recording');
+    };
+
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        const start = memoInput.selectionStart;
+        const end = memoInput.selectionEnd;
+        const text = memoInput.value;
+        const before = text.substring(0, start);
+        const after = text.substring(end);
+        
+        memoInput.value = before + (before && !before.endsWith(' ') ? ' ' : '') + transcript + after;
+        
+        // Update undo stack
+        if (memoInput.oninput) memoInput.oninput();
+    };
+
+    recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+    };
+
+    recognition.onend = () => {
+        voiceBtn.textContent = '음성으로 입력하기';
+        voiceBtn.classList.remove('recording');
+    };
+
+} else {
+    voiceBtn.style.display = 'none';
+}
 
 let currentUser = null;
 let unsubscribeMemos = null;
